@@ -1,0 +1,15 @@
+[package]
+name = "keebi"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+argh = "0.1.13"
+directories = "6.0.0"
+enigo = { version = "0.6.1", default-features = false, features = [
+  "x11rb",
+  "wayland",
+] }
+eyre = "0.6.12"
+hebi4 = { git = "https://github.com/jprochazk/hebi4" }
+rand = "0.9.2"
