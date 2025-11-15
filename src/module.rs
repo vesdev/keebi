@@ -1,7 +1,4 @@
-use std::{
-    sync::{Arc, Mutex},
-    time::Duration,
-};
+use std::{cell::RefCell, rc::Rc, time::Duration};
 
 use enigo::{Button, Direction, Enigo, Key, Keyboard, Mouse, Settings};
 use hebi4::prelude::*;
@@ -21,15 +18,12 @@ impl State {
 }
 
 pub fn module(args: Vec<String>) -> NativeModule {
-    let state = Arc::new(Mutex::new(State::new(args)));
+    let state = Rc::new(RefCell::new(State::new(args)));
 
     NativeModule::builder("keebi")
         .function(f!("arg", {
             let state = state.clone();
-            move |cx: Context, i: i64| {
-                let mut state = state.lock().expect("poisonded");
-                keebi_arg(cx, i, &mut state)
-            }
+            move |cx: Context, i: i64| keebi_arg(cx, i, &mut state.borrow_mut())
         }))
         .function(f!("sleep", keebi_sleep))
         .function(f!("exec", keebi_exec))
@@ -38,22 +32,19 @@ pub fn module(args: Vec<String>) -> NativeModule {
         .function(f!("text", {
             let state = state.clone();
             move |cx: Context, text: Param<Str>| {
-                let mut state = state.lock().expect("poisonded");
-                keebi_text(cx, text, &mut state);
+                keebi_text(cx, text, &mut state.borrow_mut());
             }
         }))
         .function(f!("button", {
             let state = state.clone();
             move |cx: Context, button: Param<Str>, direction: Param<Str>| {
-                let mut state = state.lock().expect("poisonded");
-                keebi_button(cx, button, direction, &mut state);
+                keebi_button(cx, button, direction, &mut state.borrow_mut());
             }
         }))
         .function(f!("key", {
             let state = state.clone();
             move |cx: Context, key: Param<Str>, direction: Param<Str>| {
-                let mut state = state.lock().expect("poisonded");
-                keebi_key(cx, key, direction, &mut state);
+                keebi_key(cx, key, direction, &mut state.borrow_mut());
             }
         }))
         .finish()

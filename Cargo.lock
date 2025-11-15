@@ -303,7 +303,7 @@ dependencies = [
 [[package]]
 name = "hebi4"
 version = "0.1.0"
-source = "git+https://github.com/jprochazk/hebi4#348c009cac5882dc61beabb7314c48c0f9a2d9cd"
+source = "git+https://github.com/jprochazk/hebi4#67c77535cdf330eec5e8d29208eb7cf33e1b8098"
 dependencies = [
  "beef",
  "bumpalo",
