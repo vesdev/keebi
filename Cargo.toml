@@ -11,5 +11,5 @@ enigo = { version = "0.6.1", default-features = false, features = [
   "wayland",
 ] }
 eyre = "0.6.12"
-hebi4 = { git = "https://github.com/jprochazk/hebi4", rev = "67c77535cdf330eec5e8d29208eb7cf33e1b8098" }
+hebi4 = { git = "https://github.com/jprochazk/hebi4" }
 rand = "0.9.2"
