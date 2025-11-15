@@ -1,6 +1,6 @@
 # keebi
 
-running scripts ``keebi <script> <args..>
+running scripts ``keebi <script> <args..>``
 
 ### examples
 
