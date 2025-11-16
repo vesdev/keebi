@@ -1,6 +1,6 @@
 use std::{cell::RefCell, rc::Rc, time::Duration};
 
-use enigo::{Button, Direction, Enigo, Key, Keyboard, Mouse, Settings};
+use enigo::{Button, Coordinate, Direction, Enigo, Key, Keyboard, Mouse, Settings};
 use hebi4::prelude::*;
 use rand::Rng;
 
@@ -45,6 +45,12 @@ pub fn module(args: Vec<String>) -> NativeModule {
             let state = state.clone();
             move |cx: Context, key: Param<Str>, direction: Param<Str>| {
                 keebi_key(cx, key, direction, &mut state.borrow_mut());
+            }
+        }))
+        .function(f!("move_mouse", {
+            let state = state.clone();
+            move |cx: Context, x: i64, y: i64, coordinate: Param<Str>| {
+                keebi_move_mouse(cx, x, y, coordinate, &mut state.borrow_mut());
             }
         }))
         .finish()
@@ -112,6 +118,17 @@ pub fn keebi_key(cx: Context, key: Param<Str>, direction: Param<Str>, state: &mu
         .unwrap();
 }
 
+pub fn keebi_move_mouse(cx: Context, x: i64, y: i64, coordinate: Param<Str>, state: &mut State) {
+    state
+        .enigo
+        .move_mouse(
+            x as i32,
+            y as i32,
+            parse_coordinate(coordinate.as_ref(cx.heap()).as_str()).unwrap_or(Coordinate::Abs),
+        )
+        .unwrap();
+}
+
 fn parse_key(button: &str) -> Option<enigo::Key> {
     if button.len() == 1 {
         return Some(Key::Unicode(button.chars().next()?));
@@ -141,6 +158,14 @@ fn parse_direction(button: &str) -> Option<enigo::Direction> {
         "press" => Some(Direction::Press),
         "release" => Some(Direction::Release),
         "click" => Some(Direction::Click),
+        _ => None,
+    }
+}
+
+fn parse_coordinate(button: &str) -> Option<enigo::Coordinate> {
+    match button {
+        "abs" => Some(Coordinate::Abs),
+        "rel" => Some(Coordinate::Rel),
         _ => None,
     }
 }
